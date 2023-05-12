@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public abstract class ParticleEffect {
 
-	private static final int MAX_GENERATION = 3;
+	public static final int MAX_GENERATION = 3;
 
 	public ArrayList<Particle> particles;
 	public Vector2 emitPosition;

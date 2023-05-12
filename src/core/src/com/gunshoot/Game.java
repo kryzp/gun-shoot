@@ -28,9 +28,9 @@ public class Game extends ApplicationAdapter {
 
 	private static final float BLUR_AMOUNT = 10f;
 	private static final int BLUR_SCALE_FACTOR = 4;
-	
-	private SpriteBatch batch;
+
 	private Gun currentGun;
+	private SpriteBatch batch;
 	private FrameBuffer renderTarget;
 	private FrameBuffer bloomTarget0;
 	private FrameBuffer bloomTarget1;

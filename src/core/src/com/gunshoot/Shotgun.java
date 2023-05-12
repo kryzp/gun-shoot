@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.*;
 public class Shotgun extends Gun {
 
 	private final Vector2 HANDLE_POS = new Vector2(20f, 0f);
-	private final Vector2 FIRE_POS = new Vector2(35.0f, 3.5f);
+	private final Vector2 FIRE_POS = new Vector2(35f, 3.5f);
+	private final Vector2 SHELL_EMIT_POS = new Vector2(13f, 5f);
 	private final float PUMP_DO = 0.43f;
 	private final float PUMP_TGT_OFFSET = -15f;
 	private final float PUMP_FINISH = 0.3f;
@@ -22,6 +23,7 @@ public class Shotgun extends Gun {
 	private int pumpStage = 0;
 	private boolean pumping = false;
 	private boolean canFire = true;
+	private boolean newShell = true;
 	
 	private Texture shotgunTexture;
 	private Component body;
@@ -29,6 +31,7 @@ public class Shotgun extends Gun {
 
 	private SparksParticleEffect sparks;
 	private BulletsParticleEffect bullets;
+	private ShellParticleEffect shells;
 
 	public Shotgun() {
 		super();
@@ -47,9 +50,15 @@ public class Shotgun extends Gun {
 			.cpy()
 			.add(body.position)
 			.sub(body.sprite.getOriginX(), body.sprite.getOriginY());
+		
+		Vector2 shellEmitPos = SHELL_EMIT_POS
+			.cpy()
+			.add(body.position)
+			.sub(body.sprite.getOriginX(), body.sprite.getOriginY());
 
-		sparks  = new SparksParticleEffect (fireEmitPos, shotgunTexture);
-		bullets = new BulletsParticleEffect(fireEmitPos, shotgunTexture);
+		sparks  = new SparksParticleEffect (fireEmitPos,  shotgunTexture);
+		bullets = new BulletsParticleEffect(fireEmitPos,  shotgunTexture);
+		shells  = new ShellParticleEffect  (shellEmitPos, shotgunTexture);
 
 		handle.position
 			.add(body.position)
@@ -70,6 +79,7 @@ public class Shotgun extends Gun {
 				pumpStartTimer = 0f;
 				pumpStage = 0;
 				canFire = true;
+				newShell = true;
 			}
 		} else {
 			if (pumpStartTimer > PUMP_DO) {
@@ -82,7 +92,7 @@ public class Shotgun extends Gun {
 		bodyPosXSpring = spring(body.position.x, Game.camera.viewportWidth / 2f - 50f, 8f, 0.5f, bodyPosXSpring);
 		body.position.x += bodyPosXSpring;
 		
-		bodyRotSpring = spring(body.rotation, 0f, 10f, 0.5f, bodyRotSpring);
+		bodyRotSpring = spring(body.rotation, 0f, 5f, 0.3f, bodyRotSpring);
 		body.rotation += bodyRotSpring;
 
 		body.position.y = MathUtils.lerp(body.position.y, Game.camera.viewportHeight / 2f, 20f * dt);
@@ -97,6 +107,7 @@ public class Shotgun extends Gun {
 
 		sparks.update(dt);
 		bullets.update(dt);
+		shells.update(dt);
 	}
 
 	@Override
@@ -105,6 +116,7 @@ public class Shotgun extends Gun {
 		bullets.render(b);
 		body.render(b);
 		handle.render(b);
+		shells.render(b);
 	}
 	
 	@Override
@@ -122,7 +134,7 @@ public class Shotgun extends Gun {
 		}
 		body.position.x -= 14f + 7f * Math.random();
 		body.position.y -= 5f * (Math.random() - 0.5f);
-		body.rotation -= 15 + 20f * Math.random();
+		body.rotation -= 25f + 20f * Math.random();
 		sparks.play();
 		bullets.play();
 		tickingPumpTimer = true;
@@ -143,6 +155,10 @@ public class Shotgun extends Gun {
 			if (handlePosX > PUMP_TGT_OFFSET) {
 				pumpStage = 1;
 				body.position.x -= 7f;
+				if (newShell) {
+					shells.play();
+					newShell = false;
+				}
 			}
 		} else if (pumpStage == 1) {
 			handlePosXSpring = spring(handlePosX, 0f, pumpBounce, pumpTension, handlePosXSpring);

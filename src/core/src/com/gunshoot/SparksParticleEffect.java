@@ -12,7 +12,7 @@ public class SparksParticleEffect extends ParticleEffect {
 
 	public SparksParticleEffect(Vector2 emitPos, Texture shotgunTexture) {
 		super(emitPos);
-		PARTICLE_REGION = new TextureRegion(shotgunTexture, 7, 9, 2, 3);
+		PARTICLE_REGION = new TextureRegion(shotgunTexture, 7, 10, 3, 2);
 	}
 
 	@Override
@@ -25,15 +25,17 @@ public class SparksParticleEffect extends ParticleEffect {
 			p.generation = 0;
 
 			p.position = emitPosition.cpy();
+			p.rotation = 0f;
 			p.direction = new Vector2(1f, 0f);
 
+			p.size = Math.max(0.2f, (float)Math.random() - 0.5f);
 			p.speed = 500f * (float)Math.max(0.2f, Math.random());
 			p.angularSpeed = 3000f * ((float)Math.random() - 0.5f);
-
+			p.rotationSpeed = 0f;
+			
 			p.speedDecay = 0.02f;
 			p.angularSpeedDecay = 0.04f;
-
-			p.size = Math.max(0.2f, (float)Math.random() - 0.5f);
+			p.rotationSpeedDecay = 0f;
 			p.sizeDecay = 0.03f * Math.max(0.2f, (float)Math.random());
 
 			particles.add(p);

@@ -25,17 +25,19 @@ public class BulletsParticleEffect extends ParticleEffect {
 			p.generation = 0;
 			
 			p.position = emitPosition.cpy();
+			p.rotation = 0f;
+			
 			p.direction = new Vector2(1f, 0f);
-			
 			p.direction.rotateDeg((float)(Math.random() - 0.5) * 10f);
-			
+
+			p.size = 0.65f;
 			p.speed = 1500f + (500f * (float)(Math.random() - 0.5));
 			p.angularSpeed = 0f;
+			p.rotationSpeed = 0f;
 			
 			p.speedDecay = 0f;
 			p.angularSpeedDecay = 0f;
-			
-			p.size = 0.65f;
+			p.rotationSpeedDecay = 0f;
 			p.sizeDecay = 0f;
 			
 			particles.add(p);
